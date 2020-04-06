@@ -7,12 +7,13 @@ import {
 } from 'aws-lambda'
 
 import { CreateTodoRequest } from '../../requests/CreateTodoRequest'
+import TodosRepository, { todoCreateData } from '../../repositories/TodosRepository';
 
 export const handler: APIGatewayProxyHandler = async (
   event: APIGatewayProxyEvent
 ): Promise<APIGatewayProxyResult> => {
   const newTodo: CreateTodoRequest = JSON.parse(event.body)
 
-  // TODO: Implement creating a new TODO item
+  TodosRepository.create(newTodo);
   return undefined
 }
