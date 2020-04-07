@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "auth0-js": "^9.13.1",
     "axios": "^0.18.1",
     "dateformat": "^3.0.3",
     "immutability-helper": "^3.0.1",
@@ -23,7 +24,6 @@
     "@types/react-dom": "16.8.4",
     "@types/react-router-dom": "^4.3.4",
     "@types/styled-components": "^4.1.18",
-    "auth0-js": "^9.11.1",
     "typescript": "3.4.3"
   },
   "scripts": {
