@@ -9,7 +9,7 @@ import { JwtPayload } from '../../auth/JwtPayload'
 
 const logger = createLogger('auth')
 
-const jwksUrl = 'https://brurez.auth0.com/.well-known/jwks.json'
+const jwksUrl = 'https://brurez.auth0.com/pem'
 
 export const handler = async (
   event: CustomAuthorizerEvent
