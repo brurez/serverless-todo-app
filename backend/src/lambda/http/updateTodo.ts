@@ -5,7 +5,7 @@ import {
   APIGatewayProxyResult
 } from 'aws-lambda';
 import { getUserId } from '../../helpers/authHelper';
-import { UpdateTodoRequest } from '../../requests/UpdateTodoRequest';
+import { UpdateTodoRequest } from '../../requests/updateTodoRequest';
 import { TodoRepository } from '../../dataLayer/todoRepository';
 import { ApiResponseHelper } from '../../helpers/apiResponseHelper';
 import { createLogger } from '../../utils/logger';
@@ -22,7 +22,7 @@ export const handler: APIGatewayProxyHandler = async (
   const authHeader = event.headers['Authorization'];
   const userId = getUserId(authHeader);
 
-  const item = await todosAccess.getTodoById(todoId);
+  const item = await todosAccess.getTodoById(todoId, userId);
 
   if (item.Count == 0) {
     logger.error(
@@ -42,6 +42,6 @@ export const handler: APIGatewayProxyHandler = async (
   }
 
   logger.info(`User ${userId} updating group ${todoId} to be ${updatedTodo}`);
-  await new TodoRepository().updateTodo(updatedTodo, todoId);
+  await new TodoRepository().updateTodo(updatedTodo, todoId, userId);
   return apiResponseHelper.generateEmptySuccessResponse(204);
 };

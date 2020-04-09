@@ -42,7 +42,7 @@ provider:
     minimumCompressionSize: 1024
   environment:
     AWS_NODEJS_CONNECTION_REUSE_ENABLED: 1
-    TODO_TABLE: Todos-${self:provider.stage}
+    TODO_TABLE: Todos1001-${self:provider.stage}
     IMAGES_BUCKET: brurez-todos-${self:provider.stage}
     USER_ID_INDEX: userId
   tracing:
@@ -73,6 +73,7 @@ functions:
         Resource: arn:aws:s3:::${self:provider.environment.IMAGES_BUCKET}/*
       - Effect: Allow
         Action:
+          - dynamodb:Scan
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODO_TABLE}/index/${self:provider.environment.USER_ID_INDEX}
 
@@ -87,6 +88,7 @@ functions:
     iamRoleStatements:
       - Effect: Allow
         Action:
+          - dynamodb:GetItem
           - dynamodb:DeleteItem
           - dynamodb:Scan
           - dynamodb:Query
@@ -131,6 +133,7 @@ functions:
         Action:
           - dynamodb:Scan
           - dynamodb:Query
+          - dynamodb:GetItem
           - dynamodb:UpdateItem
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODO_TABLE}
 
@@ -145,7 +148,7 @@ functions:
     iamRoleStatements:
       - Effect: Allow
         Action:
-          - dynamodb:Scan
+          - dynamodb:GetItem
           - dynamodb:Query
         Resource: arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TODO_TABLE}
       - Effect: Allow
@@ -182,16 +185,23 @@ resources:
             AttributeType: S
           - AttributeName: userId
             AttributeType: S
+          - AttributeName: createdAt
+            AttributeType: S
         KeySchema:
-          - AttributeName: todoId
+          - AttributeName: userId
             KeyType: HASH
-        GlobalSecondaryIndexes:
+          - AttributeName: todoId
+            KeyType: RANGE
+        LocalSecondaryIndexes:
           - IndexName: ${self:provider.environment.USER_ID_INDEX}
             KeySchema:
-            - AttributeName: userId
-              KeyType: HASH
+              - AttributeName: userId
+                KeyType: HASH
+              - AttributeName: createdAt
+                KeyType: RANGE
             Projection:
               ProjectionType: ALL
+
         BillingMode: PAY_PER_REQUEST
         TableName: ${self:provider.environment.TODO_TABLE}
     TodoBucket:
